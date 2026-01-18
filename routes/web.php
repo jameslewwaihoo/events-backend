@@ -5,6 +5,9 @@ use Illuminate\Support\Facades\Auth;
 use App\Http\Controllers\HomeController;
 use App\Http\Controllers\Admin\EventRsvpController;
 use App\Http\Controllers\Admin\EventController;
+use App\Http\Controllers\Purchaser\EventController as PurchaserEventController;
+use App\Http\Controllers\Purchaser\DashboardController as PurchaserDashboardController;
+use App\Http\Controllers\WorkController;
 
 /*
 |--------------------------------------------------------------------------
@@ -40,7 +43,7 @@ Route::group(['middleware' => 'auth'], function () {
 		Route::post('/upload-excel', 'uploadExcel')->name('upload.excel');
 	});
 
-	Route::prefix('admin')->group(function () {
+	Route::prefix('admin')->middleware('admin')->group(function () {
 		// RSVP listing page (Blade)
 		Route::get('/events/{event:id}/rsvps', [EventRsvpController::class, 'index'])
         ->name('admin.events.rsvps.index');
@@ -50,6 +53,33 @@ Route::group(['middleware' => 'auth'], function () {
 
 		Route::get('/events', [EventController::class, 'index'])
 			->name('admin.events.index');
+		Route::get('/events/create', [EventController::class, 'create'])
+			->name('admin.events.create');
+		Route::post('/events', [EventController::class, 'store'])
+			->name('admin.events.store');
+		Route::get('/events/{event:id}/edit', [EventController::class, 'edit'])
+			->name('admin.events.edit');
+		Route::put('/events/{event:id}', [EventController::class, 'update'])
+			->name('admin.events.update');
+		Route::delete('/events/{event:id}', [EventController::class, 'destroy'])
+			->name('admin.events.destroy');
 
+	});
+
+	// Purchaser self-service routes
+	Route::get('/dashboard', [PurchaserDashboardController::class, 'index'])->name('purchaser.dashboard');
+
+	Route::prefix('my-events')->group(function () {
+		Route::get('/', [PurchaserEventController::class, 'index'])->name('purchaser.events.index');
+		Route::get('{event:id}/edit', [PurchaserEventController::class, 'edit'])->name('purchaser.events.edit');
+		Route::put('{event:id}', [PurchaserEventController::class, 'update'])->name('purchaser.events.update');
+
+		Route::get('{event:id}/guests', [\App\Http\Controllers\Purchaser\GuestController::class, 'index'])->name('purchaser.guests.index');
+		Route::get('{event:id}/guests/{guest:id}/edit', [\App\Http\Controllers\Purchaser\GuestController::class, 'edit'])->name('purchaser.guests.edit');
+		Route::put('{event:id}/guests/{guest:id}', [\App\Http\Controllers\Purchaser\GuestController::class, 'update'])->name('purchaser.guests.update');
+
+		Route::get('{event:id}/rsvps', [\App\Http\Controllers\Purchaser\RsvpController::class, 'index'])->name('purchaser.rsvps.index');
+		Route::get('{event:id}/rsvps/{rsvp:id}/edit', [\App\Http\Controllers\Purchaser\RsvpController::class, 'edit'])->name('purchaser.rsvps.edit');
+		Route::put('{event:id}/rsvps/{rsvp:id}', [\App\Http\Controllers\Purchaser\RsvpController::class, 'update'])->name('purchaser.rsvps.update');
 	});
 });

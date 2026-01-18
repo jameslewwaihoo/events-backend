@@ -12,6 +12,8 @@ class EventRsvpController extends Controller
 {
     public function index(Request $request, Event $event)
     {
+        $this->authorize('manageGuests', $event);
+
         // Filters
         $sessionId = $request->get('session_id');
         $status    = $request->get('attendance_status'); // attending|declined
@@ -49,6 +51,8 @@ class EventRsvpController extends Controller
 
     public function exportCsv(Request $request, Event $event): StreamedResponse
     {
+        $this->authorize('manageGuests', $event);
+
         $sessionId = $request->get('session_id');
         $status    = $request->get('attendance_status');
 

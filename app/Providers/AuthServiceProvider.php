@@ -4,6 +4,14 @@ namespace App\Providers;
 
 use Illuminate\Foundation\Support\Providers\AuthServiceProvider as ServiceProvider;
 use Illuminate\Support\Facades\Gate;
+use App\Models\Event;
+use App\Models\EventAsset;
+use App\Models\EventSession;
+use App\Models\Guest;
+use App\Policies\EventPolicy;
+use App\Policies\EventAssetPolicy;
+use App\Policies\EventSessionPolicy;
+use App\Policies\GuestPolicy;
 
 class AuthServiceProvider extends ServiceProvider
 {
@@ -13,7 +21,10 @@ class AuthServiceProvider extends ServiceProvider
      * @var array<class-string, class-string>
      */
     protected $policies = [
-        // 'App\Models\Model' => 'App\Policies\ModelPolicy',
+        Event::class => EventPolicy::class,
+        EventAsset::class => EventAssetPolicy::class,
+        EventSession::class => EventSessionPolicy::class,
+        Guest::class => GuestPolicy::class,
     ];
 
     /**
