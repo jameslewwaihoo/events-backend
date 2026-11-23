@@ -36,6 +36,15 @@
                                            required>
                                 </div>
                             </div>
+                            @if ($event->private_rsvp)
+                            <div class="col-lg-6">
+                                <div class="form-group">
+                                    <label for="party_size">Invited seats</label>
+                                    <input type="number" class="form-control" id="party_size" name="party_size" min="1" max="65535"
+                                           value="{{ old('party_size', $guest->party_size) }}" required>
+                                </div>
+                            </div>
+                            @else
                             <div class="col-lg-6">
                                 <div class="form-group">
                                     <label for="rsvp_status">RSVP Status</label>
@@ -49,6 +58,7 @@
                                     </select>
                                 </div>
                             </div>
+                            @endif
                         </div>
 
                         <div class="row">
@@ -65,7 +75,7 @@
                             <div class="col-lg-6">
                                 <div class="form-group">
                                     <label for="phone">Phone</label>
-                                    <input type="text"
+                                    <input type="tel"
                                            class="form-control"
                                            id="phone"
                                            name="phone"

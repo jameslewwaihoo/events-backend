@@ -42,6 +42,7 @@ class EventController extends Controller
             'event' => new Event([
                 'status' => 'draft',
                 'event_type' => 'wedding',
+                'private_rsvp' => true,
                 'user_id' => auth()->id(),
             ]),
             'packages' => EventPackage::where('is_active', true)->orderBy('price_cents')->get(),
@@ -120,6 +121,7 @@ class EventController extends Controller
             'venue_map_url' => ['nullable', 'url', 'max:255'],
             'welcome_message' => ['nullable', 'string'],
             'rsvp_deadline' => ['nullable', 'date'],
+            'private_rsvp' => ['sometimes', 'boolean'],
             'status' => ['required', Rule::in(['draft', 'published'])],
         ]);
     }

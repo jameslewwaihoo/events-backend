@@ -33,6 +33,10 @@
                             <tr>
                                 <th>Name</th>
                                 <th>Status</th>
+                                @if ($event->private_rsvp)
+                                    <th>Confirmed seats</th>
+                                    <th>Halal meal</th>
+                                @endif
                                 <th>Session</th>
                                 <th>Submitted</th>
                                 <th class="text-right">Actions</th>
@@ -43,9 +47,13 @@
                                 <tr>
                                     <td>
                                         <div>{{ $rsvp->name }}</div>
-                                        <div class="small text-muted">{{ $rsvp->email }}</div>
+                                        <div class="small text-muted">{{ $rsvp->email ?? $rsvp->phone }}</div>
                                     </td>
                                     <td>{{ ucfirst($rsvp->attendance_status) }}</td>
+                                    @if ($event->private_rsvp)
+                                        <td>{{ $rsvp->confirmed_seats }}</td>
+                                        <td>{{ $rsvp->halal_meal === null ? '—' : ($rsvp->halal_meal ? 'Yes' : 'No') }}</td>
+                                    @endif
                                     <td>{{ optional($rsvp->session)->name ?? '—' }}</td>
                                     <td>{{ optional($rsvp->submitted_at)->format('Y-m-d H:i') }}</td>
                                     <td class="text-right">
@@ -57,7 +65,7 @@
                                 </tr>
                             @empty
                                 <tr>
-                                    <td colspan="5">No RSVPs yet.</td>
+                                    <td colspan="{{ $event->private_rsvp ? 7 : 5 }}">No RSVPs yet.</td>
                                 </tr>
                             @endforelse
                         </tbody>

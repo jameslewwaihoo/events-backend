@@ -28,7 +28,7 @@
     </div>
     <div class="col-lg-3 col-md-6">
         <div class="form-group">
-            <label for="user_id">Purchaser</label>
+            <label for="user_id">Event owner</label>
             <select class="form-control" id="user_id" name="user_id" required>
                 @foreach ($purchasers as $purchaser)
                     <option value="{{ $purchaser->id }}"
@@ -36,6 +36,10 @@
                         {{ $purchaser->name }} ({{ $purchaser->email }})
                     </option>
                 @endforeach
+                <option value="{{ auth()->id() }}"
+                    {{ (string) old('user_id', $event->user_id ?? auth()->id()) === (string) auth()->id() ? 'selected' : '' }}>
+                    Myself ({{ auth()->user()->name }})
+                </option>
             </select>
         </div>
     </div>
@@ -50,6 +54,14 @@
                    required>
         </div>
     </div>
+</div>
+
+<div class="form-group">
+    <input type="hidden" name="private_rsvp" value="0">
+    <label class="mb-0">
+        <input type="checkbox" name="private_rsvp" value="1" {{ old('private_rsvp', $event->private_rsvp) ? 'checked' : '' }}>
+        Use the shared RSVP form with a guest count
+    </label>
 </div>
 
 <div class="row">

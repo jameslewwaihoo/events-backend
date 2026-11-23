@@ -9,9 +9,9 @@ class EventSession extends Model
 {
     protected $table = 'event_sessions';
 
-    protected $fillable = ['event_id','name','start_at','location','sort_order'];
+    protected $fillable = ['event_id', 'name', 'start_at', 'end_at', 'location', 'sort_order'];
 
-    protected $casts = ['start_at' => 'datetime'];
+    protected $casts = ['start_at' => 'datetime', 'end_at' => 'datetime'];
 
     public function event(): BelongsTo { return $this->belongsTo(Event::class); }
 }

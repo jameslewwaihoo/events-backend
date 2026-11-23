@@ -2,6 +2,10 @@
 
 return [
 
+    'invitation' => [
+        'web_url' => env('INVITATION_WEB_URL'),
+    ],
+
     /*
     |--------------------------------------------------------------------------
     | Third Party Services

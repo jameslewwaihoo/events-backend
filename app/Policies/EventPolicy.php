@@ -55,7 +55,7 @@ class EventPolicy
 
     public function manageGuests(User $user, Event $event): bool
     {
-        return $this->update($user, $event) && $event->featureEnabled('rsvp_enabled');
+        return $this->update($user, $event) && ($event->private_rsvp || $event->featureEnabled('rsvp_enabled'));
     }
 
     public function manageInvites(User $user, Event $event): bool

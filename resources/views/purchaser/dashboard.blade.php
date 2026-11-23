@@ -86,6 +86,11 @@
                             @endif
                         </span>
                     </p>
+                    @if ($hasPrivateEvents)
+                        <p class="mt-2 mb-0 text-sm">
+                            {{ $rsvpStats['confirmed_seats'] }} confirmed seats · {{ $rsvpStats['pending_invitations'] }} pending invitations
+                        </p>
+                    @endif
                 </div>
             </div>
         </div>

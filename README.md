@@ -7,6 +7,15 @@
 <a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/l/laravel/framework" alt="License"></a>
 </p>
 
+## Wedding RSVP
+
+1. Set `INVITATION_WEB_URL` in the Laravel `.env` to the React site's base URL, such as `http://127.0.0.1:5173` for local development.
+2. Run `php artisan migrate` from the backend directory. For an existing event, enable **Require a private RSVP link for each household** under **Admin → Events → Edit**. New events have it checked by default. Enter the wedding date and RSVP deadline, and publish the event when the details are ready.
+3. Open **Admin → Events → Invitations**, create one invitation per guest or household with its seat limit, and use **Copy link** to share the invitation. To issue a link for an existing guest, open that guest's edit form, confirm the seat limit, and save.
+4. Under **Admin → Events → RSVPs**, review confirmed seats and pending invitations or export replies to CSV. RSVP stays open through the deadline date in Singapore/Malaysia time. Previously submitted public replies stay in the database and are excluded from the private event's totals.
+
+For a local test, run `php artisan serve` in the backend directory and `INVITATION_API_PROXY=http://127.0.0.1:8000 npm run dev` in the web directory. Use separate test database credentials in the backend `.env` when testing with sample guests.
+
 ## About Laravel
 
 Laravel is a web application framework with expressive, elegant syntax. We believe development must be an enjoyable and creative experience to be truly fulfilling. Laravel takes the pain out of development by easing common tasks used in many web projects, such as:

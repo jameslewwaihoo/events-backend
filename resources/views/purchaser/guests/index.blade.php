@@ -27,6 +27,47 @@
                     </div>
                 @endif
 
+                @if ($event->private_rsvp)
+                    <div class="card-body">
+                        @include('admin.events.partials.errors')
+                        @if ($invitationWebUrl && $event->status === 'published')
+                            <button type="button" class="btn btn-sm btn-outline-primary mb-3"
+                                data-invitation-url="{{ $invitationWebUrl.'/e/'.rawurlencode($event->slug) }}">Copy shared RSVP link</button>
+                        @endif
+                        <p>Send the shared link directly to your guests. Their responses appear under RSVPs.</p>
+                        <form method="POST" action="{{ route('purchaser.guests.store', $event->id) }}">
+                            @csrf
+                            <div class="form-row align-items-end">
+                                <div class="form-group col-md-6">
+                                    <label for="name">Guest or household name</label>
+                                    <input id="name" name="name" class="form-control" value="{{ old('name') }}" maxlength="255" required>
+                                </div>
+                                <div class="form-group col-md-3">
+                                    <label for="party_size">Invited seats</label>
+                                    <input type="number" id="party_size" name="party_size" class="form-control"
+                                           value="{{ old('party_size', 1) }}" min="1" max="65535" required>
+                                </div>
+                                <div class="form-group col-md-3">
+                                    <label for="guest-email">Email</label>
+                                    <input type="email" id="guest-email" name="email" class="form-control" value="{{ old('email') }}" maxlength="255">
+                                </div>
+                                <div class="form-group col-md-6">
+                                    <label for="guest-phone">Phone</label>
+                                    <input type="tel" id="guest-phone" name="phone" class="form-control" value="{{ old('phone') }}" maxlength="50">
+                                </div>
+                                <div class="form-group col-md-3">
+                                    <button type="submit" class="btn btn-primary">Add invitation</button>
+                                </div>
+                            </div>
+                        </form>
+                        @if (!$invitationWebUrl)
+                            <p class="mb-0 text-muted">Set INVITATION_WEB_URL to enable guest links.</p>
+                        @elseif ($event->status !== 'published')
+                            <p class="mb-0 text-muted">Publish the event before sharing guest links.</p>
+                        @endif
+                    </div>
+                @endif
+
                 <div class="table-responsive">
                     <table class="table align-items-center table-flush">
                         <thead class="thead-light">
@@ -34,6 +75,9 @@
                                 <th>Name</th>
                                 <th>Contact</th>
                                 <th>RSVP</th>
+                                @if ($event->private_rsvp)
+                                    <th>Confirmed / invited</th>
+                                @endif
                                 <th class="text-right">Actions</th>
                             </tr>
                         </thead>
@@ -45,7 +89,12 @@
                                         <div>{{ $guest->email }}</div>
                                         <div class="small text-muted">{{ $guest->phone }}</div>
                                     </td>
-                                    <td>{{ ucfirst($guest->rsvp_status ?? 'pending') }}</td>
+                                    @if ($event->private_rsvp)
+                                        <td>{{ ucfirst(optional($guest->householdReply)->attendance_status ?? 'pending') }}</td>
+                                        <td>{{ optional($guest->householdReply)->confirmed_seats ?? '—' }} / {{ $guest->party_size }}</td>
+                                    @else
+                                        <td>{{ ucfirst($guest->rsvp_status ?? 'pending') }}</td>
+                                    @endif
                                     <td class="text-right">
                                         <a class="btn btn-sm btn-outline-secondary"
                                            href="{{ route('purchaser.guests.edit', [$event->id, $guest->id]) }}">
@@ -55,7 +104,7 @@
                                 </tr>
                             @empty
                                 <tr>
-                                    <td colspan="4">No guests yet.</td>
+                                    <td colspan="{{ $event->private_rsvp ? 5 : 4 }}">No guests yet.</td>
                                 </tr>
                             @endforelse
                         </tbody>
@@ -70,3 +119,20 @@
     </div>
 </div>
 @endsection
+
+@if ($event->private_rsvp)
+    @push('js')
+        <script>
+            document.querySelectorAll('[data-invitation-url]').forEach((button) => {
+                button.addEventListener('click', async () => {
+                    try {
+                        await navigator.clipboard.writeText(button.dataset.invitationUrl);
+                        button.textContent = 'Copied';
+                    } catch {
+                        window.prompt('Copy this invitation link', button.dataset.invitationUrl);
+                    }
+                });
+            });
+        </script>
+    @endpush
+@endif

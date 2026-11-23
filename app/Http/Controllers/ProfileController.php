@@ -43,11 +43,12 @@ class ProfileController extends Controller
      */
     public function password(PasswordRequest $request)
     {
-        if (auth()->user()->id == 1) {
+        $user = $request->user();
+        if ($user->id == 1) {
             return back()->withErrors(['not_allow_password' => __('You are not allowed to change the password for a default user.')]);
         }
 
-        auth()->user()->update(['password' => Hash::make($request->get('password'))]);
+        $user->update(['password' => Hash::make($request->validated()['password'])]);
 
         return back()->withPasswordStatus(__('Password successfully updated.'));
     }

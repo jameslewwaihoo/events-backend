@@ -98,10 +98,24 @@
                                     <td>{{ optional($e->event_date)->format('Y-m-d') }}</td>
                                     <td>{{ optional($e->rsvp_deadline)->format('Y-m-d') }}</td>
                                     <td class="text-right">
+                                        @if ($e->private_rsvp)
+                                            <a class="btn btn-sm btn-outline-primary"
+                                               href="{{ route('purchaser.guests.index', $e->id) }}">
+                                                Invitations
+                                            </a>
+                                        @endif
                                         <a class="btn btn-sm btn-outline-primary"
                                            href="{{ route('admin.events.rsvps.index', $e->id) }}">
                                             RSVPs
                                         </a>
+                                        @if (\App\Services\InvitationPhotos::supports($e))
+                                            <a class="btn btn-sm btn-outline-primary"
+                                               href="{{ route('admin.events.photos.index', $e->id) }}">
+                                                Photos
+                                            </a>
+                                            <a class="btn btn-sm btn-outline-primary"
+                                               href="{{ route('admin.events.music.index', $e->id) }}">Music</a>
+                                        @endif
                                         <a class="btn btn-sm btn-outline-secondary"
                                            href="{{ route('admin.events.edit', $e->id) }}">
                                             Edit

@@ -33,8 +33,8 @@
                             </div>
                             <div class="col-lg-6">
                                 <div class="form-group">
-                                    <label>Email</label>
-                                    <input class="form-control" value="{{ $rsvp->email }}" disabled>
+                                    <label>Phone or email</label>
+                                    <input class="form-control" value="{{ $rsvp->email ?? $rsvp->phone }}" disabled>
                                 </div>
                             </div>
                         </div>
@@ -63,6 +63,23 @@
                             </div>
                         </div>
 
+                        @if ($rsvp->household_reply)
+                            <div class="form-group">
+                                <label for="confirmed_seats">Confirmed seats if attending</label>
+                                <input type="number" class="form-control" id="confirmed_seats" name="confirmed_seats"
+                                       min="0" max="{{ $rsvp->guest->party_size ?? 65535 }}"
+                                       value="{{ old('confirmed_seats', $rsvp->confirmed_seats) }}">
+                            </div>
+                            <div class="form-group">
+                                <label for="halal_meal">Halal meal needed if attending</label>
+                                @php($halalMeal = old('halal_meal', $rsvp->halal_meal === null ? '' : (string) (int) $rsvp->halal_meal))
+                                <select class="form-control" id="halal_meal" name="halal_meal">
+                                    <option value="" {{ $halalMeal === '' || $halalMeal === null ? 'selected' : '' }}>Not specified</option>
+                                    <option value="1" {{ $halalMeal === '1' ? 'selected' : '' }}>Yes</option>
+                                    <option value="0" {{ $halalMeal === '0' ? 'selected' : '' }}>No</option>
+                                </select>
+                            </div>
+                        @endif
                         <div class="d-flex justify-content-end">
                             <button type="submit" class="btn btn-primary">Save RSVP</button>
                         </div>

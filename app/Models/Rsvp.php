@@ -11,10 +11,15 @@ class Rsvp extends Model
 {
     protected $fillable = [
         'event_id','guest_id','session_id',
-        'name','phone','email','attendance_status','remarks','submitted_at',
+        'name','phone','email','attendance_status','remarks','submitted_at','confirmed_seats','halal_meal',
     ];
 
-    protected $casts = ['submitted_at' => 'datetime'];
+    protected $casts = [
+        'submitted_at' => 'datetime',
+        'confirmed_seats' => 'integer',
+        'halal_meal' => 'boolean',
+        'household_reply' => 'boolean',
+    ];
 
     const   STATUS_ATTENDING    = 'attending',
             STATUS_DECLINED     = 'declined';

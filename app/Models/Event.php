@@ -23,6 +23,7 @@ class Event extends Model
         'venue_map_url',
         'welcome_message',
         'rsvp_deadline',
+        'private_rsvp',
         'status',
         'published_at',
         'feature_overrides',
@@ -31,8 +32,10 @@ class Event extends Model
     protected $casts = [
         'event_date' => 'date',
         'rsvp_deadline' => 'datetime',
+        'private_rsvp' => 'boolean',
         'published_at' => 'datetime',
         'feature_overrides' => 'array',
+        'invitation_music' => 'array',
     ];
 
     const STATUS_PUBLISHED = 'published';
@@ -50,9 +53,32 @@ class Event extends Model
         return $this->hasMany(Rsvp::class);
     }
 
+    public function reportableRsvps(): HasMany
+    {
+        $rsvps = $this->rsvps();
+
+        return $this->private_rsvp ? $rsvps->where('household_reply', true) : $rsvps->whereNull('household_reply');
+    }
+
+    public function sharedRsvpSeatLimit(): int
+    {
+        return max(1, min(65535, config('wedding.shared_rsvp_seat_limit')));
+    }
+
+    public function privateRsvpIsClosed(): bool
+    {
+        return $this->rsvp_deadline !== null
+            && now('Asia/Singapore')->toDateString() > $this->rsvp_deadline->toDateString();
+    }
+
     public function assets(): HasMany
     {
         return $this->hasMany(EventAsset::class);
+    }
+
+    public function usesWeddingInvitation(): bool
+    {
+        return in_array($this->slug, ['james-and-poh-yee', 'wedding-preview'], true);
     }
 
     public function seatingTables(): HasMany

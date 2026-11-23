@@ -17,9 +17,13 @@
             <div class="card shadow">
                 <div class="card-header border-0 d-flex justify-content-between align-items-center">
                     <h3 class="mb-0">Edit Event</h3>
-                    <a class="btn btn-sm btn-outline-secondary" href="{{ route('admin.events.index') }}">
-                        Back to list
-                    </a>
+                    <div>
+                        @if (\App\Services\InvitationPhotos::supports($event))
+                            <a class="btn btn-sm btn-outline-primary" href="{{ route('admin.events.photos.index', $event->id) }}">Photos</a>
+                            <a class="btn btn-sm btn-outline-primary" href="{{ route('admin.events.music.index', $event->id) }}">Music</a>
+                        @endif
+                        <a class="btn btn-sm btn-outline-secondary" href="{{ route('admin.events.index') }}">Back to list</a>
+                    </div>
                 </div>
                 <div class="card-body">
                     @include('admin.events.partials.errors')
